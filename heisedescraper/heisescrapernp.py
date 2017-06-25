@@ -30,7 +30,7 @@ def getHeaders(content):
 			madelower = word.lower()
 			allwords.append(madelower)
 
-#initialise variable
+#initialise variables
 heiseurl = "https://www.heise.de/thema/https?seite=" #URL of the website
 allheaders = [] #all headlines
 allwords = [] #all words in the headlines

@@ -1,15 +1,26 @@
-## English version of this README to follow!
+# Webscraper for heise.de - A University Assignment for Database Systems
 
-Bevor wir einen Webscraper erstellen können, müssen wir erst herausfinden, wie die Webseite aufgebaut wird, was die Struktur ist, usw, um zu wissen, wonach unser Webscraper suchen soll. Darum haben wir die Webseite besucht und die Source-Datei (HTML Datei) angesehen. Wir merken, dass alle Artikeln zwischen den &lt;div> Tag mit der Klasse "keywordliste" aufgelistet werden. Zusätzlich finden wir jede Überschrift in (oder hinter) einem &lt;header> Tag, der sich auch in einem anderen &lt;div> Tag befindet. Zum Schluss merken wir, dass die Seiten sequentiell numeriert werden, wobei die erste Seite die 0. Seite ist.
+This program was written as part of an assignment in the course Database Systems at the Freie Universität Berlin. The assignment was to create a Webscraper that takes all the headlines of articles in the category "https" on heise.de to determine the three most used words in all headlines.
 
-Wir haben einfach die getPage Funktion aus dem Greyhound-Scraper kopiert und benutzt, damit wir ein BeautifulSoup Objekt erstellen können. Wir wissen, dass alle URLs mit "https://www.heise.de/thema/https?seite=" anfangen, deshalb haben wir dies in eine Variable gespeichert. Die Variablen allheaders und allwords werden auch initialisiert.
+---
 
-Eine while wird erzeugt, damit wir Zugriff auf alle Seiten mit Artikeln haben können. Die 0. Seite wird erst geöffnet, wird direkt zum &lt;div> Tag mit der Klasse "keywordliste" gegangen, und alle &lt;div> Tags darin werden gefunden. Nicht alle dieser &lt;div> Tags haben einen &lt;header> Tag, deswegen sollen wir überprüfen, ob den Wert von &lt;header> nicht None (also nicht leer) ist. Falls nicht, dann kriegen wir die Überschrift und fügen die in der allheaders Liste hinzu. Danach werden alle Wörter in jeder Überschrift mit Hilfe von Regular Expressions gefunden, und die werden in der allwords Liste gespeichert. Da wir später keine Probleme mit Vergleichungen haben wollen, werden alle Wörter klein geschrieben. Dieser Prozess wird für alle Seiten ausgeführt. Die Schleife terminiert, wenn die erste Seite gefunden wird, die keine &lt;div> Tag mit der Klasse "keywordliste" gefunden wird.
+## The Idea
 
-Danach werden alle Wörter sortiert und wird es gezählt, wie oft ein Wort auf der Liste vorkommt. Das entspricht, wie oft dieses Wort in einer Überschrift vorkommt. Am Ende haben wir eine Liste von Tupeln mit dem Wort und der Anzahl. Dies werden wieder sortiert, und die Top 10 Wörter (oder Strings, da einige gefundene Strings keine Wörter der deutschen Sprache sind) werden zurückgegeben. Laut Duden ist "https" kein deutsches Wort (also es gibt keine Definition in Duden für "https", Quelle: http://www.duden.de/suchen/shop/https), deswegen sind unsere Top 3 Deutsche Wörter:
+Before programming the Webscraper, I had to first look at the actual website to see its structure and viewed its source code in order to find out the best way to grab the article titles. I noticed that all articles are listed inside a &lt;div> tag with the class name *keywordliste*. In addition, the actual titles are in a &lt;header>, which is also inside yet another &lt;div> tag. Finally, it was worth noting that the pages where the articles are listed are numbered in sequential order, with the first page having the number 0.
 
-1. und (36)
-2. für (32)
-3. mit (28)
+The assignment showed me a Webscraper at https://github.com/xconnect/fub.bsc.dbs.scraper.greyhound-data.com and from that I copied the `getPage()` function in order to connect to a page and create a BeautifulSoup object. Through the initial website videos I noted that all the pages I wanted to scrape had URLs which started with "https://www.heise.de/thema/https?seite=" which is why that was saved into a variable. allheaders and allwords, which collected all the headlines and all the words in the headlines, were also intitialized.
 
-Hochgeladen sind zwei Varianten. **heisescraper.py** zählt alle Vorkommen eines Worts durch eine explizite Schleife, wobei **heisescrapernp.py** nutzt die unique Funktion des Moduls numpy (Numerical Python), um diese Operation zu machen.
+With help from a while loop all pages with articles can be accessed. The loop ends when a site does not have a &lt;div> tag with the class *keywordliste*. If the loop finds a valid URL, it finds all &lt;header> tags and saves its contents in the allheaders list. Once a headline is saved, regular expressions are used in order to extract the individual words and save them in the allwords list.
+
+Once all headlines and words have been collected, the list of words is sorted, and how often each word is used is counted. All this is done with the help of the `unique()` function from Numerical Python (numpy). The generated tuples are then sorted in descending order based on counts, and the ten words/strings with the highest count are printed out.
+
+## Challenges and Choices
+
+1. Extracting words using regular expressions was somewhat tricky, as certain symbols such as apostrophes had to be included, while others such as colons had to be ignored.
+2. Counting how often a word appears in the allwords list was originally coded with an explicit loop until I discovered and learned how to make it more efficient (or at least have less code) with the help of numpy and the `zip()` function.
+
+## Code Credits
+
+As mentioned earlier, `getPage()` was taken from the provided Greyhound Webscraper at https://github.com/xconnect/fub.bsc.dbs.scraper.greyhound-data.com .
+
+Code on how to sort tuples was taken from https://stackoverflow.com/questions/14466068/sort-a-list-of-tuples-by-second-value-reverse-true-and-then-by-key-reverse-fal .
